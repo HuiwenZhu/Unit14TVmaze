@@ -55,11 +55,12 @@ function populateShows(shows) {
   for (let show of shows) {
     let $item = $(
       `<div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
-      <img src="${show.image.image} class="card-img-top" alt="...">
+      <img src="${show.image}" class="card-img-top" alt="...">
          <div class="card" data-show-id="${show.id}">
            <div class="card-body">
              <h5 class="card-title">${show.name}</h5>
              <p class="card-text">${show.summary}</p>
+             <button class=" btn btn-primary get-episodes">Episodes</button>
            </div>
          </div>
        </div>
@@ -112,12 +113,11 @@ async function getEpisodes(id) {
 function populateEpisodes(epis) {
   let $episodeList = $("#episodes-list");
   $episodeList.empty();
-  for (let epi of epis) {
+  for (let episode of epis) {
     let $episodes = $(
       `<li>
         ${episode.name}
         (season ${episode.season}, episode ${episode.number})
-
       </li>
       
       `
@@ -132,11 +132,12 @@ function populateEpisodes(epis) {
 
 // TODO: return array-of-episode-info, as described in docstring above
 
-$("#episodes-area").on("click", async function handleSearch(evt) {
-  evt.preventDefault();
-  let ID = $(evt.target).closest(".Show").data("show-id");
-
-  let episodes = await getEpisodes(ID);
-
-  populateEpisodes(episodes);
-});
+$("#shows-list").on(
+  "click",
+  ".get-episodes",
+  async function handleEpisodeClick(evt) {
+    let showId = $(evt.target).closest(".Show").data("show-id");
+    let episodes = await getEpisodes(showId);
+    populateEpisodes(episodes);
+  }
+);
